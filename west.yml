@@ -1,0 +1,18 @@
+manifest:
+  remotes:
+    - name: nrfconnect
+      url-base: https://github.com/nrfconnect
+  projects:
+    - name: nrf
+      repo-path: sdk-nrf
+      remote: nrfconnect
+      revision: v1.6.1
+      import: true
+    # Drivers repository
+    - name: air-quality-wing-drivers
+      path: aqw
+      revision: 6a8454ab13a96d5173225cbfc1f4b64c36ff3238
+      url: git@github.com:circuitdojo/air-quality-wing-zephyr-drivers.git
+  self:
+    # This repository should be cloned to 
+    path: demo
