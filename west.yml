@@ -11,7 +11,7 @@ manifest:
     # Drivers repository
     - name: air-quality-wing-drivers
       path: aqw
-      revision: 6a8454ab13a96d5173225cbfc1f4b64c36ff3238
+      revision: main
       url: git@github.com:circuitdojo/air-quality-wing-zephyr-drivers.git
   self:
     # This repository should be cloned to 
