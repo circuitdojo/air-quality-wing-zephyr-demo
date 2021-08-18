@@ -12,6 +12,7 @@ LOG_MODULE_REGISTER(demo);
 #define CONFIG_SHTC3_DEV_NAME DT_LABEL(SHTC3)
 
 #define SGP40 DT_INST(0, sensirion_sgp40)
+#define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
 
 //TODO: PM2.5 sensor
 
@@ -29,15 +30,28 @@ static struct aqw_sensor humidity_sensor =
         .dev_name = CONFIG_SHTC3_DEV_NAME,
 };
 
+static struct aqw_sensor voc_sensor =
+    {
+        .type = AQW_VOC_SENSOR,
+        .chan = SENSOR_CHAN_VOC,
+        .dev_name = CONFIG_SGP40_DEV_NAME,
+};
+
 static struct aqw_sensor *sensors[] = {
     &temperature_sensor,
     &humidity_sensor,
+    &voc_sensor,
 };
 
 void sensor_cb(struct aqw_sensor_data *data, size_t len)
 {
     for (int i = 0; i < len; i++)
     {
+
+        /* Skip if not valid */
+        if (data[i].type == AQW_INVALID_SENSOR)
+            continue;
+
         LOG_INF("%s: %i.%i", aqw_sensor_type_to_string(data[i].type), data[i].val.val1, data[i].val.val2);
     }
 }

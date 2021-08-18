@@ -13,13 +13,12 @@
         compatible = "sensirion,sgp40";
         reg = <0x59>;
         label = "SGP40";
-        status = "okay";
+        enable-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
     };
 
 	shtc3@70 {
 		compatible = "sensirion,shtc3";
 		reg = <0x70>;
 		label = "SHTC3";
-		status = "okay";
     };
 };
