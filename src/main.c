@@ -52,7 +52,7 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
         if (data[i].type == AQW_INVALID_SENSOR)
             continue;
 
-        LOG_INF("%s: %i.%i", aqw_sensor_type_to_string(data[i].type), data[i].val.val1, data[i].val.val2);
+        LOG_INF("%s: %i.%i%s", aqw_sensor_type_to_string(data[i].type), data[i].val.val1, data[i].val.val2, aqw_sensor_unit_to_string(data[i].type));
     }
 }
 
