@@ -14,6 +14,12 @@ LOG_MODULE_REGISTER(demo);
 #define SGP40 DT_INST(0, sensirion_sgp40)
 #define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
 
+#define HPMA115S0 DT_INST(0, honeywell_hpma115s0)
+#define CONFIG_HPMA115S0_DEV_NAME DT_LABEL(HPMA115S0)
+
+#define START_SENSOR_INTERVAL 1000
+#define STANDARD_SENSOR_INTERVAL 60000
+
 //TODO: PM2.5 sensor
 
 static struct aqw_sensor temperature_sensor =
@@ -37,11 +43,21 @@ static struct aqw_sensor voc_sensor =
         .dev_name = CONFIG_SGP40_DEV_NAME,
 };
 
+static struct aqw_sensor hpma_sensor =
+    {
+        .type = AQW_PM25_SENSOR,
+        .chan = SENSOR_CHAN_PM_2_5,
+        .dev_name = CONFIG_HPMA115S0_DEV_NAME,
+};
+
 static struct aqw_sensor *sensors[] = {
     &temperature_sensor,
     &humidity_sensor,
     &voc_sensor,
+    &hpma_sensor,
 };
+
+static uint32_t sensor_interval = START_SENSOR_INTERVAL;
 
 void sensor_cb(struct aqw_sensor_data *data, size_t len)
 {
@@ -51,6 +67,10 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
         /* Skip if not valid */
         if (data[i].type == AQW_INVALID_SENSOR)
             continue;
+
+        /* Change the interval once the first VOC readings come in */
+        if (data[i].type == AQW_VOC_SENSOR && sensor_interval == START_SENSOR_INTERVAL)
+            sensor_interval = STANDARD_SENSOR_INTERVAL;
 
         LOG_INF("%s: %i.%i%s", aqw_sensor_type_to_string(data[i].type), data[i].val.val1, data[i].val.val2, aqw_sensor_unit_to_string(data[i].type));
     }
@@ -75,6 +95,6 @@ void main(void)
         if (err)
             LOG_WRN("Unable to start fetch. Err: %i", err);
 
-        k_sleep(K_MSEC(10000));
+        k_sleep(K_MSEC(sensor_interval));
     }
 }
