@@ -17,16 +17,15 @@ LOG_MODULE_REGISTER(demo);
 #define HPMA115S0 DT_INST(0, honeywell_hpma115s0)
 #define CONFIG_HPMA115S0_DEV_NAME DT_LABEL(HPMA115S0)
 
-#define START_SENSOR_INTERVAL 1000
-#define STANDARD_SENSOR_INTERVAL 60000
-
-//TODO: PM2.5 sensor
+/* Inverval in seconds */
+#define STANDARD_SENSOR_INTERVAL 60
 
 static struct aqw_sensor temperature_sensor =
     {
         .type = AQW_TEMPERATURE_SENSOR,
         .chan = SENSOR_CHAN_AMBIENT_TEMP,
         .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .interval = STANDARD_SENSOR_INTERVAL,
 };
 
 static struct aqw_sensor humidity_sensor =
@@ -34,6 +33,7 @@ static struct aqw_sensor humidity_sensor =
         .type = AQW_HUMIDITY_SENSOR,
         .chan = SENSOR_CHAN_HUMIDITY,
         .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .interval = STANDARD_SENSOR_INTERVAL,
 };
 
 static struct aqw_sensor voc_sensor =
@@ -41,6 +41,7 @@ static struct aqw_sensor voc_sensor =
         .type = AQW_VOC_SENSOR,
         .chan = SENSOR_CHAN_VOC,
         .dev_name = CONFIG_SGP40_DEV_NAME,
+        .interval = STANDARD_SENSOR_INTERVAL,
 };
 
 static struct aqw_sensor hpma_sensor =
@@ -48,6 +49,7 @@ static struct aqw_sensor hpma_sensor =
         .type = AQW_PM25_SENSOR,
         .chan = SENSOR_CHAN_PM_2_5,
         .dev_name = CONFIG_HPMA115S0_DEV_NAME,
+        .interval = STANDARD_SENSOR_INTERVAL,
 };
 
 static struct aqw_sensor *sensors[] = {
@@ -57,8 +59,6 @@ static struct aqw_sensor *sensors[] = {
     &hpma_sensor,
 };
 
-static uint32_t sensor_interval = START_SENSOR_INTERVAL;
-
 void sensor_cb(struct aqw_sensor_data *data, size_t len)
 {
     for (int i = 0; i < len; i++)
@@ -67,10 +67,6 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
         /* Skip if not valid */
         if (data[i].type == AQW_INVALID_SENSOR)
             continue;
-
-        /* Change the interval once the first VOC readings come in */
-        if (data[i].type == AQW_VOC_SENSOR && sensor_interval == START_SENSOR_INTERVAL)
-            sensor_interval = STANDARD_SENSOR_INTERVAL;
 
         LOG_INF("%s: %i.%i%s", aqw_sensor_type_to_string(data[i].type), data[i].val.val1, data[i].val.val2, aqw_sensor_unit_to_string(data[i].type));
     }
@@ -85,16 +81,9 @@ void main(void)
     /* Init Air Quality Wing */
     err = aqw_init(sensors, ARRAY_SIZE(sensors), sensor_cb);
     if (err)
-    {
         __ASSERT_MSG_INFO("Unable to init Air Quality Wing library. Err: %i", err);
-    }
 
-    for (;;)
-    {
-        err = aqw_sensor_start_fetch();
-        if (err)
-            LOG_WRN("Unable to start fetch. Err: %i", err);
-
-        k_sleep(K_MSEC(sensor_interval));
-    }
+    err = aqw_sensor_start_fetch();
+    if (err)
+        __ASSERT_MSG_INFO("Unable to start fetch. Err: %i", err);
 }
