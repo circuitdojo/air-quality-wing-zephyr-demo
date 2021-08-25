@@ -1,3 +1,8 @@
+/**
+ * @author Jared Wolff (hello@jaredwolff.com)
+ * @copyright Copyright Circuit Dojo LLC 2021
+ */
+
 #include <zephyr.h>
 #include <device.h>
 #include <drivers/sensor.h>
