@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2021 Circuit Dojo LLC
+ */
+
+ &i2c1 {
+    sgp40@59 {
+        compatible = "sensirion,sgp40";
+        reg = <0x59>;
+        label = "SGP40";
+        enable-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+    };
+
+	shtc3@70 {
+		compatible = "sensirion,shtc3";
+		reg = <0x70>;
+		label = "SHTC3";
+    };
+};
+
+&uart2 {
+    compatible = "nordic,nrf-uarte";
+    current-speed = <9600>;
+    tx-pin = <24>;
+	rx-pin = <23>;
+    status = "okay";
+
+    hpma115s0 {
+        compatible = "honeywell,hpma115s0";
+        label = "HPMA115S0";
+        enable-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+    };
+};
