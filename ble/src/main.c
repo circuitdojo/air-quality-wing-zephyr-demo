@@ -11,7 +11,7 @@
 #include <app_ble.h>
 
 #include <logging/log.h>
-LOG_MODULE_REGISTER(demo);
+LOG_MODULE_REGISTER(aqw_ble_demo);
 
 /* Device name defintions*/
 #define SHTC3 DT_INST(0, sensirion_shtc3)

@@ -10,7 +10,7 @@
 #include <aqw.h>
 
 #include <logging/log.h>
-LOG_MODULE_REGISTER(demo);
+LOG_MODULE_REGISTER(aqw_basic_demo);
 
 /* Device name defintions*/
 #define SHTC3 DT_INST(0, sensirion_shtc3)
