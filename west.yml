@@ -14,6 +14,16 @@ manifest:
       revision: main
       url: git@github.com:circuitdojo/air-quality-wing-zephyr-drivers.git
       import: true
+    # Golioth repository.
+    - name: golioth
+      path: modules/lib/golioth
+      revision: b59c21bafc78a57a38b9094cda33c453a8bed38d
+      url: git@github.com:golioth/zephyr.git
+    # QCBOR
+    - name: qcbor
+      revision: 3427dee6898da78a509c2259cee65960011d775c
+      path: demo/golioth/lib/qcbor
+      url: git@github.com:laurencelundblade/QCBOR.git
   self:
     # This repository should be cloned to 
     path: demo
