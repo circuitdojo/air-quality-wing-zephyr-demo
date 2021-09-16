@@ -101,12 +101,23 @@ void main(void)
     if (err)
         __ASSERT_MSG_INFO("Unable to init bluetooth library. Err: %i", err);
 
-    /* Init Air Quality Wing */
-    err = aqw_init(sensors, ARRAY_SIZE(sensors), sensor_cb);
-    if (err)
-        __ASSERT_MSG_INFO("Unable to init Air Quality Wing library. Err: %i", err);
+    for (;;)
+    {
 
-    err = aqw_sensor_start_fetch();
-    if (err)
-        __ASSERT_MSG_INFO("Unable to start fetch. Err: %i", err);
+        for (int i = 0; i < 4; i++)
+        {
+
+            /* Data */
+            struct app_ble_payload payload = {
+                .value = {.val1 = i, .val2 = 0},
+                .ts = k_uptime_ticks(),
+                .type = sensors[i]->type,
+            };
+
+            /* Attempt to publish no matter what */
+            app_ble_publish_sensor_data(&payload);
+        }
+
+        k_sleep(K_SECONDS(30));
+    }
 }
