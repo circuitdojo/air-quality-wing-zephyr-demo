@@ -12,7 +12,7 @@ manifest:
     - name: air-quality-wing-drivers
       path: aqw
       revision: main
-      url: git@github.com:circuitdojo/air-quality-wing-zephyr-drivers.git
+      url: https://github.com/circuitdojo/air-quality-wing-zephyr-drivers.git
       import: true
   self:
     # This repository should be cloned to 
