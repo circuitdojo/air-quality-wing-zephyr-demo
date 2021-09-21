@@ -35,9 +35,9 @@ static void app_ble_aqw_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_
 enum app_ble_aqw_char_position
 {
     AQW_TEMP_ATTR_POS = 2,
-    AQW_HUMIDITY_ATTR_POS = 4,
-    AQW_VOC_ATTR_POS = 6,
-    AQW_PM25_ATTR_POS = 8,
+    AQW_HUMIDITY_ATTR_POS = 5,
+    AQW_VOC_ATTR_POS = 8,
+    AQW_PM25_ATTR_POS = 11,
 };
 
 /* Air Quality Wing Service Declaration */
