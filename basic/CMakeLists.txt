@@ -21,9 +21,9 @@ list(APPEND mcuboot_DTC_OVERLAY_FILE
 endif()
 
 # Set environment variables
-set(ZEPHYR_TOOLCHAIN_VARIANT gnuarmemb)
+# set(ZEPHYR_TOOLCHAIN_VARIANT gnuarmemb)
 # set(GNUARMEMB_TOOLCHAIN_PATH "C:\\Program Files (x86)\\GNU Tools Arm Embedded\\9 2019-q4-major")
-set(GNUARMEMB_TOOLCHAIN_PATH /Users/jaredwolff/gcc-arm-none-eabi-9-2019-q4-major)
+# set(GNUARMEMB_TOOLCHAIN_PATH /Users/jaredwolff/gcc-arm-none-eabi-9-2019-q4-major)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
