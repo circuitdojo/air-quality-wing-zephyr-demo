@@ -2,6 +2,10 @@
 
 This repository is contains examples of using the Air Quality Wing with Zephyr.
 
+## Documentation
+
+The documentation for this board and these samples is [located here.](https://docs.jaredwolff.com/air-quality-wing/zephyr-examples.html)
+
 ## Setup
 
 Here is the minimal amount of steps to get an example working. This example is currently only configured for the nRF52 DK. 
@@ -91,8 +95,28 @@ newtmgr -c serial image upload build/zephyr/app_update.bin && newtmgr -c serial 
 
 ### Xenon
 
-TBD
+```
+cd basic
+west build -b particle_xenon
+```
+
+Then flash using
+
+```
+nrfjprog --program build/merged.hex --chiperase --reset
+```
 
 ### nRF9160 Feather
 
-TBD
+```
+cd basic
+west build -b circuitdojo_feather_nrf9160ns
+```
+
+**Note:** in newer versions of the SDK the target has been changed to `circuitdojo_feather_nrf9160_ns`
+
+Then flash using
+
+```
+nrfjprog --program build/merged.hex --chiperase --reset
+```
