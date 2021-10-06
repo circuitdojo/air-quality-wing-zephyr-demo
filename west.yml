@@ -6,18 +6,18 @@ manifest:
     - name: nrf
       repo-path: sdk-nrf
       remote: nrfconnect
-      revision: v1.6.1
+      revision: v1.7.0
       import: true
     # Drivers repository
     - name: air-quality-wing-drivers
       path: aqw
-      revision: 99c5d79d37240877984442256dd173a114a75a84
+      revision: fa12a3daba02f373a1f55018ad097851492c4c67
       url: https://github.com/circuitdojo/air-quality-wing-zephyr-drivers.git
       import: true
     # Golioth repository.
     - name: golioth
       path: modules/lib/golioth
-      revision: b59c21bafc78a57a38b9094cda33c453a8bed38d
+      revision: 6d9a0df93bbe05a89f6f36404183656f85413602
       url: https://github.com/golioth/zephyr-sdk.git
     # QCBOR
     - name: qcbor

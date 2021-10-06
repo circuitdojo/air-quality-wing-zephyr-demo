@@ -11,7 +11,6 @@
 #include <devicetree.h>
 #include <aqw.h>
 
-#if defined(CONFIG_NRF_MODEM_LIB)
 #include <modem/lte_lc.h>
 #include <modem/nrf_modem_lib.h>
 #include <modem/at_cmd.h>
@@ -20,7 +19,6 @@
 #include <nrf_modem.h>
 #include <date_time.h>
 #include <power/reboot.h>
-#endif
 
 #include <net/coap.h>
 #include <net/golioth/system_client.h>
@@ -36,10 +34,10 @@ K_SEM_DEFINE(lte_connected, 0, 1);
 static struct golioth_client *client = GOLIOTH_SYSTEM_CLIENT_GET();
 
 /* Device name defintions*/
-#define SHTC3 DT_INST(0, sensirion_shtc3)
+#define SHTC3 DT_INST(0, sensirion_shtc3cd)
 #define CONFIG_SHTC3_DEV_NAME DT_LABEL(SHTC3)
 
-#define SGP40 DT_INST(0, sensirion_sgp40)
+#define SGP40 DT_INST(0, sensirion_sgp40cd)
 #define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
 
 #define HPMA115S0 DT_INST(0, honeywell_hpma115s0)
@@ -152,7 +150,6 @@ static void golioth_on_message(struct golioth_client *client,
     }
 }
 
-#if defined(CONFIG_NRF_MODEM_LIB)
 static void lte_handler(const struct lte_lc_evt *const evt)
 {
     switch (evt->type)
@@ -231,14 +228,19 @@ static void nrf_modem_lib_dfu_handler(void)
         break;
     }
 }
-#endif
+
+void date_time_evt(const struct date_time_evt *evt)
+{
+
+    /*Setup and connect to Golioth once we have the time*/
+    client->on_message = golioth_on_message;
+    golioth_system_client_start();
+}
 
 static int modem_init()
 {
 
     int err = 0;
-
-#if defined(CONFIG_NRF_MODEM_LIB)
 
     nrf_modem_lib_dfu_handler();
 
@@ -270,24 +272,11 @@ static int modem_init()
     k_sem_take(&lte_connected, K_FOREVER);
 
     /* Force time update */
-    err = date_time_update_async(NULL);
+    err = date_time_update_async(date_time_evt);
     if (err)
     {
         LOG_ERR("Unable to update time with date_time_update_async. Err: %i", err);
     }
-
-    /* Enable PSM mode */
-    err = lte_lc_psm_req(true);
-    if (err)
-    {
-        LOG_ERR("Requesting PSM failed, error: %d", err);
-    }
-
-#endif
-
-    /*Setup and connect to Golioth*/
-    client->on_message = golioth_on_message;
-    golioth_system_client_start();
 
     return 0;
 }

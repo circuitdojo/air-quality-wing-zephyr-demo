@@ -13,10 +13,10 @@
 LOG_MODULE_REGISTER(aqw_basic_demo);
 
 /* Device name defintions*/
-#define SHTC3 DT_INST(0, sensirion_shtc3)
+#define SHTC3 DT_INST(0, sensirion_shtc3cd)
 #define CONFIG_SHTC3_DEV_NAME DT_LABEL(SHTC3)
 
-#define SGP40 DT_INST(0, sensirion_sgp40)
+#define SGP40 DT_INST(0, sensirion_sgp40cd)
 #define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
 
 #define HPMA115S0 DT_INST(0, honeywell_hpma115s0)

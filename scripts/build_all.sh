@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Different apps
-declare -a basic_targets=("circuitdojo_feather_nrf9160ns" "particle_xenon" "nrf52840dk_nrf52840")
+declare -a basic_targets=("circuitdojo_feather_nrf9160_ns" "particle_xenon" "nrf52840dk_nrf52840")
 declare -a ble_targets=("particle_xenon" "nrf52840dk_nrf52840")
-declare -a golioth_targets=("circuitdojo_feather_nrf9160ns")
+declare -a golioth_targets=("circuitdojo_feather_nrf9160_ns")
 
 # Applications
 declare -a apps=("basic" "ble" "golioth")

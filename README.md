@@ -110,10 +110,8 @@ nrfjprog --program build/merged.hex --chiperase --reset
 
 ```
 cd basic
-west build -b circuitdojo_feather_nrf9160ns
+west build -b circuitdojo_feather_nrf9160_ns
 ```
-
-**Note:** in newer versions of the SDK the target has been changed to `circuitdojo_feather_nrf9160_ns`
 
 Then flash using
 
