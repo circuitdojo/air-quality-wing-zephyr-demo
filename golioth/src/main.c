@@ -125,7 +125,7 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
 
     /* Publish gps data */
     err = golioth_lightdb_set(client,
-                              GOLIOTH_LIGHTDB_PATH("env"),
+                              GOLIOTH_LIGHTDB_STREAM_PATH("env"),
                               COAP_CONTENT_FORMAT_APP_CBOR,
                               buf, size);
     if (err)
