@@ -6,6 +6,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: zephyrprojectrtos/ci:v0.18.4
+    strategy:
+      matrix:
+        sample: [basic, ble, golioth]
+        target: [circuitdojo_feather_nrf9160ns, nrf52840dk_nrf52840, particle_xenon]
+        exclude:
+          # Exclude nrf9160 for ble
+          - sample: ble
+            target: circuitdojo_feather_nrf9160ns
+          # Exclude nrf52840dk_nrf52840 for golioth
+          - sample: golioth
+            target: nrf52840dk_nrf52840
+          # Exclude particle_xenon for golioth
+          - sample: golioth
+            target: particle_xenon
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,13 +35,16 @@ jobs:
           west update
           pip3 install -r ../zephyr/scripts/requirements-base.txt
 
-      - name: Build firmware
+      - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
         working-directory: demo
         run: |
-          ./scripts/build_all.sh
+          west build -b ${{ matrix.target }} -s ${{ matrix.sample }} -p
+          mkdir -p .out
+          cp build/zephyr/app_update.bin .out/${{ matrix.sample }}_${{ matrix.target }}_app_update.bin
+          cp build/zephyr/merged.hex .out/${{ matrix.sample }}_${{ matrix.target }}_merged.hex
 
       - name: Archive firmware
         uses: actions/upload-artifact@v2
         with:
           name: firmware
-          path: demo/_out/
+          path: demo/.out/
