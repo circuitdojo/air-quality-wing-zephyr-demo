@@ -10,6 +10,10 @@ The documentation for this board and these samples is [located here.](https://do
 
 Here is the minimal amount of steps to get an example working. This example is currently only configured for the nRF52 DK. 
 
+### Hardware
+
+If you do not have a PM2.5 sensor you can comment out `&hpma_sensor,` within `sensors[]` in `main.c` before building. 
+
 ### Virtual Environment
 
 Set up a python virual environment:
@@ -72,6 +76,11 @@ pip3 install -r zephyr/scripts/requirements.txt
 
    * For **Windows** you can download and install the toolchain with [this direct link.](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2019-q4-major)
 
+### Golioth
+
+You will need to edit `golioth.conf` with your credentials in order to connect to Golioth's backend. More instructions on setting up your credentials can be [found here.](https://docs.golioth.io/docs/guides/golioth-platform-getting-started/platform-manage-devices) You can also create devices and add credentials within the [Golioth Console.](https://console.golioth.io)
+
+
 ## Building
 
 ### nRF52840 DK
@@ -92,7 +101,6 @@ or load via the bootloader
 ```
 newtmgr -c serial image upload build/zephyr/app_update.bin && newtmgr -c serial reset
 ```
-
 ### Xenon
 
 ```
