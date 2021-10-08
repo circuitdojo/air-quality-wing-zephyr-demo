@@ -44,7 +44,7 @@ static struct golioth_client *client = GOLIOTH_SYSTEM_CLIENT_GET();
 #define CONFIG_HPMA115S0_DEV_NAME DT_LABEL(HPMA115S0)
 
 /* Inverval in seconds */
-#define STANDARD_SENSOR_INTERVAL 60
+#define STANDARD_SENSOR_INTERVAL 600
 
 static struct aqw_sensor temperature_sensor =
     {
