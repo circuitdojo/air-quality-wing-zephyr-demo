@@ -67,13 +67,64 @@ static struct aqw_sensor *sensors[] = {
 };
 
 static const struct device *display;
+static lv_obj_t *temp_label, *temp_value_label;
+static lv_obj_t *hum_label, *hum_value_label;
+static lv_obj_t *pm25_label, *pm25_value_label;
+static lv_obj_t *voc_label, *voc_value_label;
+
+char temp_value[11] = {0};
+char hum_value[11] = {0};
+char pm25_value[11] = {0};
+char voc_value[11] = {0};
+
+static uint8_t get_two_digits(int32_t value)
+{
+    int32_t new_val = value;
+
+    while (new_val > 100)
+    {
+        new_val /= 10;
+    }
+
+    return new_val;
+}
+
+static int display_update(struct aqw_sensor_data *data)
+{
+
+    switch (data->type)
+    {
+    case AQW_TEMPERATURE_SENSOR:
+
+        snprintf(temp_value, sizeof(temp_value) - 1, "%d.%d", data->val.val1, get_two_digits(data->val.val2));
+        lv_label_set_text(temp_value_label, temp_value);
+
+        break;
+    case AQW_HUMIDITY_SENSOR:
+
+        snprintf(hum_value, sizeof(hum_value) - 1, "%d.%d%%", data->val.val1, get_two_digits(data->val.val2));
+        lv_label_set_text(hum_value_label, hum_value);
+        break;
+    case AQW_PM25_SENSOR:
+
+        snprintf(pm25_value, sizeof(pm25_value) - 1, "%d.%d", data->val.val1, get_two_digits(data->val.val2));
+        lv_label_set_text(pm25_value_label, pm25_value);
+        break;
+    case AQW_VOC_SENSOR:
+
+        snprintf(voc_value, sizeof(voc_value) - 1, "%d.%d", data->val.val1, get_two_digits(data->val.val2));
+        lv_label_set_text(voc_value_label, voc_value);
+        break;
+
+    default:
+        break;
+    }
+
+    return 0;
+}
 
 static int display_init(void)
 {
-    char count_str[11] = {0};
-    uint32_t count = 0U;
-    lv_obj_t *hello_world_label;
-    lv_obj_t *count_label;
 
     display = device_get_binding(DT_LABEL(DT_INST(0, solomon_ssd1306fb)));
     if (display == NULL)
@@ -82,37 +133,46 @@ static int display_init(void)
         return -ENODEV;
     }
 
-    hello_world_label = lv_label_create(lv_scr_act(), NULL);
+    temp_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(temp_label, "T: (C)");
+    lv_obj_align(temp_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
 
-    lv_label_set_text(hello_world_label, "Hello!");
-    lv_obj_align(hello_world_label, NULL, LV_ALIGN_CENTER, 0, 0);
+    temp_value_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(temp_value_label, "*");
+    lv_obj_align(temp_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 10);
 
-    count_label = lv_label_create(lv_scr_act(), NULL);
-    lv_obj_align(count_label, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    hum_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(hum_label, "H: (%)");
+    lv_obj_align(hum_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 36);
+
+    hum_value_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(hum_value_label, "*");
+    lv_obj_align(hum_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 46);
+
+    voc_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(voc_label, "VOC:");
+    lv_obj_align(voc_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 72);
+
+    voc_value_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(voc_value_label, "*");
+    lv_obj_align(voc_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 82);
+
+    pm25_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(pm25_label, "PM25:");
+    lv_obj_align(pm25_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 108);
+
+    pm25_value_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(pm25_value_label, "*");
+    lv_obj_align(pm25_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 118);
 
     lv_task_handler();
-
-    // canvas = lv_canvas_create(lv_scr_act(), NULL);
-    // lv_canvas_transform(canvas, lv_canvas_get_img(), 900, 256, 0, 0, 32, 64, false);
-    // lv_canvas_draw_text(canvas, 0, 0, 128, &hello_label_dsc, "test", LV_LABEL_ALIGN_CENTER);
-
-    while (1)
-    {
-        if ((count % 100) == 0U)
-        {
-            sprintf(count_str, "%d", count / 100U);
-            lv_label_set_text(count_label, count_str);
-        }
-        lv_task_handler();
-        k_sleep(K_MSEC(10));
-        ++count;
-    }
 
     return 0;
 }
 
 void sensor_cb(struct aqw_sensor_data *data, size_t len)
 {
+
     for (int i = 0; i < len; i++)
     {
 
@@ -121,7 +181,12 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
             continue;
 
         LOG_INF("%s: %i.%i%s", aqw_sensor_type_to_string(data[i].type), data[i].val.val1, data[i].val.val2, aqw_sensor_unit_to_string(data[i].type));
+
+        /* Update value in display */
+        display_update(&data[i]);
     }
+
+    lv_task_handler();
 }
 
 void main(void)
