@@ -3,6 +3,9 @@
  */
 
 &i2c1 {
+    compatible = "nordic,nrf-twim";
+    zephyr,concat-buf-size = <1024>;
+
     sgp40@59 {
         compatible = "sensirion,sgp40cd";
         reg = <0x59>;
@@ -16,20 +19,21 @@
         label = "SHTC3";
     };
 
-	ssd1306@3c {
-		compatible = "solomon,ssd1306fb";
-		reg = <0x3c>;
-		label = "SSD1306";
-		width = <128>;
-		height = <64>;
-		segment-offset = <2>;
-		page-offset = <0>;
-		display-offset = <0>;
-		multiplex-ratio = <63>;
-		segment-remap;
-		com-invdir;
-		prechargep = <0x22>;
-	};    
+    ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        label = "SSD1306";
+        width = <64>;
+        height = <128>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <31>;
+        multiplex-ratio = <63>;
+        segment-remap;
+        com-invdir;
+        com-sequential;
+        prechargep = <0x22>;
+    };    
 };
 
 &uart2 {
