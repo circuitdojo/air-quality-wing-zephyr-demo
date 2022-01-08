@@ -8,80 +8,130 @@ The documentation for this board and these samples is [located here.](https://do
 
 ## Setup
 
+**Prebuilt binaries are also [located here.](https://github.com/circuitdojo/air-quality-wing-zephyr-demo/suites/4487788218/artifacts/119565482)** Not all binaries will work out of the box. Golioth binaries require you to edit `golioth.conf` before using. ([See below.](#golioth-configuration))
+
+## Sample descriptions
+The code is a a work in progress but includes a BLE example, nRF9160 Feather example an standalone sample. 
+
+### Basic
+The **Basic** example connects to and obtain samples on a regular basis. They're printed out to the console. 
+
+### BLE (Bluetooth Low Energy)
+The **BLE** example does the same as the **Basic** but also connectable via Bluetooth. Once connected characteristics can be subscribed to and updated by the device. 
+
+### Golioth
+The **Golioth** example is the same as **Basic** but it also publishes to the Golioth IoT backend for integration with tools like Grafana.
+
+## Setting up your environment
 Here is the minimal amount of steps to get an example working. This example is currently only configured for the nRF52 DK. 
 
 ### Hardware
 
 If you do not have a PM2.5 sensor you can comment out `&hpma_sensor,` within `sensors[]` in `main.c` before building. 
 
-### Virtual Environment
+### SDK Setup
 
-Set up a python virual environment:
+If you didn't already, install Visual Studio code. You can [download it here.](https://code.visualstudio.com/Download)
 
-```
-virtualenv -p python3 env
-```
+![Marketplace](img/extension/marketplace.png)
 
-Then enable it by running:
+Once Visual Studio code is installed, [download the extension here. 👈](https://marketplace.visualstudio.com/items?itemName=circuitdojo.zephyr-tools&ssr=false#overview)
 
-```
-source env/bin/activate
-```
+Once loaded it will also install all necessary VSCode dependencies.
 
-### Install `west`
+Then install Git and Python.
 
-```
-pip3 install west
-```
+#### Mac
 
-### Init and update project
+Requires `git` and `python3` to be installed. The easiest way to do that is with [Homebrew](https://brew.sh).
 
 ```
-west init -m https://github.com/circuitdojo/air-quality-wing-zephyr-demo.git  --manifest-rev main
+> brew install git python3
 ```
 
-Or already cloned locally:
+#### Windows
+
+Requires `git` and `python` to be installed.
+
+- Download and install `git` [from here.](https://git-scm.com/download/win)
+- Download and install `python` [from here.](https://www.python.org/ftp/python/3.9.9/python-3.9.9-amd64.exe)
+
+#### Linux
+
+Requires `git`,`python` and `pip` to be installed.
+
+Use your distro's package manager of choice to install. 
+
+For example on Ubuntu:
 
 ```
-west init -l .
+sudo apt install git python3 python3-pip
 ```
 
-Then run
+### Run Setup
 
-```
-west update
-```
+Then open the command window (COMMAND+SHIFT+P on Mac or CTRL+SHIFT+P on other systems) and type `Zephyr Tools: Setup`
 
-### Install remaining python dependencies
+![Setup](img/extension/setup.png)
 
-```
-pip3 install -r zephyr/scripts/requirements.txt
-```
+### Init the repo
 
-### Install toolchain
+Then initialize this repo using the `Zephyr Tools: Init Repo` command:
 
-   * For **Mac** run the following: (it does require you install `wget`. `brew` is an easy way to do so: `brew install wget`)
+![Init repo](img/extension/init-repo.png)
 
-     ```
-     cd ~
-     wget "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2"
-     tar xvfj gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2
-     rm gcc-arm-none-eabi-9-2019-q4-major-mac.tar.bz2
-     ```
+Make sure you use `https://github.com/circuitdojo/air-quality-wing-zephyr-demo.git` as the URL. It's best to select an **empty folder** to initialize the project to.
 
-     **Note** for Catalina users you will get an error when running these utilities for the first time. You must allow them to be executed in your Security preferences.
+### Then build the sample!
 
-     ![Error running ARM Toolchain](img/sdk-setup-mac/cannot-be-opened.jpeg)
+![Build](img/extension/build.png)
 
+You'll be prompted for a **project** and **board**. Make sure the board matches the supported boards. Current supported board targets include:
 
-   * For **Windows** you can download and install the toolchain with [this direct link.](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads/9-2019-q4-major)
+- `particle_xenon`
+- `circuitdojo_feather_nrf9160_ns`
+- `nrf52840dk_nrf52840`
 
-### Golioth
+Here's what it will look like:
+
+![Choosing board](img/extension/choosing-board.png)
+![Choosing app](img/extension/choosing-app.png)
+
+Once the build completes you should get a **Build complete!** popup along with some success messages in the the terminal.
+
+![Build success](img/extension/success.png)
+
+### Golioth Configuration
 
 You will need to edit `golioth.conf` with your credentials in order to connect to Golioth's backend. More instructions on setting up your credentials can be [found here.](https://docs.golioth.io/docs/guides/golioth-platform-getting-started/platform-manage-devices) You can also create devices and add credentials within the [Golioth Console.](https://console.golioth.io)
 
+## Building and loading using VSCode
 
-## Building
+Using the command window run **Zephyr Tools: Build**
+
+![Build](img/extension/build.png)
+
+Then place the device into bootloader mode:
+   1. Hold the MODE button
+   2. Then tap the RST button while holding mode
+   3. **Hold the MODE button until the Blue LED illuminates**
+
+
+Then, load using the **Zephyr Tools: Load via Bootloader** task.
+
+![Option for loading](img/extension/load-via-newtmgr.png)
+
+Pay attention to the progress in the bottom console.
+
+![Option for loading](img/extension/load-via-newtmgr-progress.png)
+
+Once complete, the extension will reset your device and should start executing!
+
+**Important:** make sure you close all console sessions with your nRF9160 Feather before programming using `newtmgr`. Otherwise the `newtmgr` image upload will timeout.
+
+## Building Manually
+
+These commands are simlar to what the Zephyr Tools extensions uses. The programming commands are also included here.
 
 ### nRF52840 DK
 
@@ -101,6 +151,7 @@ or load via the bootloader
 ```
 newtmgr -c serial image upload build/zephyr/app_update.bin && newtmgr -c serial reset
 ```
+
 ### Xenon
 
 ```
@@ -126,3 +177,5 @@ Then flash using
 ```
 nrfjprog --program build/merged.hex --chiperase --reset
 ```
+
+You can also load using `newtmgr`. More information [is here.](../nrf9160-programming-and-debugging.md#using-newtmgr)
