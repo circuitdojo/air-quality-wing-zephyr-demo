@@ -3,4 +3,4 @@ build
 _out
 
 # Files
-*.txt
+log-*.txt
