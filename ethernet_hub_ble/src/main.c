@@ -20,6 +20,11 @@
 #include <logging/log.h>
 LOG_MODULE_REGISTER(aqw_ethernet_hub_ble);
 
+#define SENSOR_DATA_ENTRY_COUNT 4
+
+static struct aqw_sensor_data sensor_data[SENSOR_DATA_ENTRY_COUNT] = {0};
+static uint8_t sensor_data_count = 0;
+
 static struct golioth_client *client = GOLIOTH_SYSTEM_CLIENT_GET();
 
 static void golioth_on_message(struct golioth_client *client,
@@ -46,26 +51,29 @@ void date_time_evt(const struct date_time_evt *evt)
     golioth_system_client_start();
 }
 
-void publish(struct aqw_sensor_data *data)
+void publish(struct aqw_sensor_data *data, size_t num_entries)
 {
     int err = 0;
     uint8_t buf[256];
     size_t size = 0;
 
-    char *name = aqw_sensor_type_to_string(data->type);
-    char *unit = aqw_sensor_unit_to_string(data->type);
-    LOG_INF("%s: %i.%i%s", name, data->val.val1, abs(data->val.val2), unit);
-
-    /* Get the current time */
-    err = date_time_now(&data->ts);
-    if (err)
+    for (int i = 0; i < num_entries; i++)
     {
-        LOG_WRN("Unable to get timestamp!");
+        char *name = aqw_sensor_type_to_string(data[i].type);
+        char *unit = aqw_sensor_unit_to_string(data[i].type);
+        LOG_INF("%s: %i.%i%s", name, data[i].val.val1, abs(data[i].val.val2), unit);
+
+        /* Get the current time */
+        err = date_time_now(&data[i].ts);
+        if (err)
+        {
+            LOG_WRN("Unable to get timestamp!");
+        }
     }
 
     struct app_codec_payload payload = {
         .data = data,
-        .sensor_count = 1,
+        .sensor_count = num_entries,
     };
 
     /* Encode CBOR data */
@@ -112,7 +120,16 @@ void main(void)
         switch (evt.type)
         {
         case APP_EVENT_BLE_DATA:
-            publish(&evt.data);
+
+            sensor_data[sensor_data_count] = evt.data;
+            sensor_data_count++;
+
+            /* Publish if we're full */
+            if (sensor_data_count == SENSOR_DATA_ENTRY_COUNT)
+            {
+                publish(sensor_data, SENSOR_DATA_ENTRY_COUNT);
+                sensor_data_count = 0;
+            }
 
             break;
         case APP_EVENT_ETHERNET_READY:
