@@ -23,7 +23,7 @@
 #include <net/coap.h>
 #include <net/golioth/system_client.h>
 
-#include <app_codec.h>
+#include <codec/aqw.h>
 
 #include <logging/log.h>
 LOG_MODULE_REGISTER(aqw_golioth_demo);
@@ -130,7 +130,7 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
                               buf, size);
     if (err)
     {
-        LOG_WRN("Failed to gps data: %d", err);
+        LOG_WRN("Failed to send data: %d", err);
     }
 }
 

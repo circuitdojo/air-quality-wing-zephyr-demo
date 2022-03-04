@@ -32,10 +32,4 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(air-quality-wing-demo)
 
-# Internal
-add_subdirectory(src/codec)
-
-# External libraries
-add_subdirectory(lib)
-
 target_sources(app PRIVATE src/main.c)
