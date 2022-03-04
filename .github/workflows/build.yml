@@ -8,12 +8,17 @@ jobs:
     container: zephyrprojectrtos/ci:v0.18.4
     strategy:
       matrix:
-        sample: [basic, basic_with_display, ble, golioth]
+        sample: [basic, basic_with_display, ble, golioth, ethernet_hub_ble]
         target: [circuitdojo_feather_nrf9160ns, nrf52840dk_nrf52840, particle_xenon]
         exclude:
           # Exclude nrf9160 for ble
           - sample: ble
             target: circuitdojo_feather_nrf9160ns
+          # Exclude for ethernet
+          - sample: ethernet_hub_ble
+            target: circuitdojo_feather_nrf9160ns
+          - sample: ethernet_hub_ble
+            target: nrf52840dk_nrf52840
           # Exclude nrf52840dk_nrf52840 for golioth
           - sample: golioth
             target: nrf52840dk_nrf52840
