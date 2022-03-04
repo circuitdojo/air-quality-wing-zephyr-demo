@@ -1,0 +1,7 @@
+#
+# Copyright (c) 2022 Circuit Dojo LLC
+#
+
+mainmenu "Air Quality Wing Zephyr Demo"
+
+source "Kconfig.zephyr"

@@ -17,13 +17,11 @@ manifest:
     # Golioth repository.
     - name: golioth
       path: modules/lib/golioth
-      revision: 6d9a0df93bbe05a89f6f36404183656f85413602
+      revision: main
       url: https://github.com/golioth/zephyr-sdk.git
-    # QCBOR
-    - name: qcbor
-      revision: 3427dee6898da78a509c2259cee65960011d775c
-      path: demo/golioth/lib/qcbor
-      url: https://github.com/laurencelundblade/QCBOR.git
+      import:
+        name-allowlist:
+          - qcbor
   self:
     # This repository should be cloned to 
     path: demo

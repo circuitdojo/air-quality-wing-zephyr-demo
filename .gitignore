@@ -1,3 +1,6 @@
 # Folders
 build
 _out
+
+# Files
+*.txt
