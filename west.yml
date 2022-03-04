@@ -11,7 +11,7 @@ manifest:
     # Drivers repository
     - name: air-quality-wing-drivers
       path: aqw
-      revision: fa12a3daba02f373a1f55018ad097851492c4c67
+      revision: main
       url: https://github.com/circuitdojo/air-quality-wing-zephyr-drivers.git
       import: true
     # Golioth repository.
