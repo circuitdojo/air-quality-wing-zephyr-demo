@@ -18,10 +18,8 @@ manifest:
     - name: golioth
       path: modules/lib/golioth
       revision: main
-      url: https://github.com/golioth/zephyr-sdk.git
-      import:
-        name-allowlist:
-          - qcbor
+      url: https://github.com/golioth/golioth-zephyr-sdk
+      import: west-external.yml
   self:
     # This repository should be cloned to 
     path: demo
