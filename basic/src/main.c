@@ -9,6 +9,11 @@
 #include <devicetree.h>
 #include <aqw.h>
 
+#if defined(CONFIG_USB_UART_CONSOLE)
+#include <drivers/uart.h>
+#include <usb/usb_device.h>
+#endif
+
 #include <logging/log.h>
 LOG_MODULE_REGISTER(aqw_basic_demo);
 
@@ -82,6 +87,14 @@ void main(void)
     int err = 0;
 
     LOG_INF("Air Quality Wing Demo");
+
+#if defined(CONFIG_USB_UART_CONSOLE)
+    err = usb_enable(NULL);
+    if (err)
+    {
+        LOG_WRN("Unable to init USB. Err: %i", err);
+    }
+#endif
 
     /* Init Air Quality Wing */
     err = aqw_init(sensors, ARRAY_SIZE(sensors), sensor_cb);
