@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2021 Circuit Dojo LLC
+ */
+
+/delete-node/ &storage_partition;
+
+/ {
+    chosen {
+        zephyr,code-partition = &slot0_partition;
+    };
+};
+
+&i2c2 {
+    sgp40@59 {
+        compatible = "sensirion,sgp40cd";
+        reg = <0x59>;
+        label = "SGP40";
+    };
+
+    shtc3@70 {
+        compatible = "sensirion,shtc3cd";
+        reg = <0x70>;
+        label = "SHTC3";
+    };
+};
+
+&lpuart1 {
+    current-speed = <9600>;
+    dmas = <&dmamux1 11 22 0x20440
+    &dmamux1 1 21 0x20480>;
+    dma-names = "tx", "rx";
+
+    hpma115s0 {
+        compatible = "honeywell,hpma115s0";
+        label = "HPMA115S0";
+        enable-gpios = <&gpiob 5 GPIO_ACTIVE_HIGH>;
+    };
+};
+
+&flash0 {
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        boot_partition: partition@0 {
+            label = "mcuboot";
+            reg = <0x000000000 0x00010000>;
+        };
+        slot0_partition: partition@10000 {
+            label = "image-0";
+            reg = <0x000010000 0x000016000>;
+        };
+        slot1_partition: partition@26000 {
+            label = "image-1";
+            reg = <0x00026000 0x000016000>;
+        };
+        scratch_partition: partition@3c000 {
+            label = "image-scratch";
+            reg = <0x0003c000 0x00002000>;
+        };
+        storage_partition: partition@3e000 {
+            label = "storage";
+            reg = <0x0003e000 0x00002000>;
+        };
+    };
+};
+
+&dma1 {
+    status = "okay";
+};
+
+&dma2 {
+    status = "okay";
+};
+
+&dmamux1 {
+    status = "okay";
+};

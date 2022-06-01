@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2022 Circuit Dojo LLC
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+manifest:
+  remotes:
+    - name: zephyrproject
+      url-base: https://github.com/zephyrproject-rtos
+  projects:
+    - name: zephyr
+      repo-path: zephyr
+      remote: zephyrproject
+      revision: v3.0.0
+      import:
+        name-allowlist:
+          - cmsis
+          - hal_st
+          - hal_stm32
+          - libmetal
+          - littlefs
+          - loramac-node
+          - mbedtls
+          - net-tools
+          - segger
+          - mcuboot
+    # Drivers repository
+    - name: air-quality-wing-drivers
+      path: aqw
+      revision: main
+      url: https://github.com/circuitdojo/air-quality-wing-zephyr-drivers.git
+      import: true
+    # Golioth repository.
+    - name: golioth
+      path: modules/lib/golioth
+      revision: main
+      url: https://github.com/golioth/golioth-zephyr-sdk
+      import: west-external.yml
+  self:
+    # This repository should be cloned to 
+    path: demo

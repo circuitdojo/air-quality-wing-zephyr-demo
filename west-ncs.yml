@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2022 Circuit Dojo LLC
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 manifest:
   remotes:
     - name: nrfconnect
@@ -6,7 +12,7 @@ manifest:
     - name: nrf
       repo-path: sdk-nrf
       remote: nrfconnect
-      revision: v1.7.0
+      revision: v1.7.1
       import: true
     # Drivers repository
     - name: air-quality-wing-drivers
