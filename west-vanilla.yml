@@ -12,23 +12,49 @@ manifest:
     - name: zephyr
       repo-path: zephyr
       remote: zephyrproject
-      revision: v3.0.0
+      revision: v3.3.0
       import:
-        name-allowlist:
-          - cmsis
-          - hal_st
-          - hal_stm32
-          - libmetal
-          - littlefs
-          - loramac-node
-          - mbedtls
-          - net-tools
-          - segger
-          - mcuboot
+        name-blocklist:
+            - canopennode
+            - civetweb
+            - matter
+            - nrf-802154
+            - cjson
+            - openthread
+            - cmock
+            - unity
+            - cddl-gen
+            - homekit
+            - lz4
+            - mipi-sys-t
+            - nanopb
+            - fatfs
+            - hal_gigadevice
+            - hal_stm32
+            - hal_st
+            - hal_infineon
+            - hal_silabs
+            - hal_rpi_pico
+            - hal_quicklogic
+            - hal_openisa
+            - hal_nxp
+            - hal_nuvoton
+            - hal_microchip
+            - hal_espressif
+            - hal_cypress
+            - hal_atmel
+            - hal_altera
+            - hal_telink
+            - hal_ti
+            - hal_xtensa
+            - open-amp 
+            - trusted-firmware-m
+            - tf-m-tests
+            - zscilib
     # Drivers repository
     - name: air-quality-wing-drivers
       path: aqw
-      revision: main
+      revision: 22522c9c0f26d2189e7e2659941f024b5a767b8b
       url: https://github.com/circuitdojo/air-quality-wing-zephyr-drivers.git
       import: true
     # Golioth repository.

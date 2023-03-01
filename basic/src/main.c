@@ -3,29 +3,14 @@
  * @copyright Copyright Circuit Dojo LLC 2021
  */
 
-#include <zephyr.h>
-#include <device.h>
-#include <drivers/sensor.h>
-#include <devicetree.h>
-#include <aqw.h>
-
-#if defined(CONFIG_USB_UART_CONSOLE)
-#include <drivers/uart.h>
-#include <usb/usb_device.h>
-#endif
-
-#include <logging/log.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(aqw_basic_demo);
 
-/* Device name defintions*/
-#define SHTC3 DT_INST(0, sensirion_shtc3cd)
-#define CONFIG_SHTC3_DEV_NAME DT_LABEL(SHTC3)
-
-#define SGP40 DT_INST(0, sensirion_sgp40cd)
-#define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
-
-#define HPMA115S0 DT_INST(0, honeywell_hpma115s0)
-#define CONFIG_HPMA115S0_DEV_NAME DT_LABEL(HPMA115S0)
+#include <aqw.h>
 
 /* Inverval in seconds */
 #define STANDARD_SENSOR_INTERVAL 60
@@ -34,7 +19,7 @@ static struct aqw_sensor temperature_sensor =
     {
         .type = AQW_TEMPERATURE_SENSOR,
         .chan = SENSOR_CHAN_AMBIENT_TEMP,
-        .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_shtc3cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -42,7 +27,7 @@ static struct aqw_sensor humidity_sensor =
     {
         .type = AQW_HUMIDITY_SENSOR,
         .chan = SENSOR_CHAN_HUMIDITY,
-        .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_shtc3cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -50,7 +35,7 @@ static struct aqw_sensor voc_sensor =
     {
         .type = AQW_VOC_SENSOR,
         .chan = SENSOR_CHAN_VOC,
-        .dev_name = CONFIG_SGP40_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_sgp40cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -58,7 +43,7 @@ static struct aqw_sensor hpma_sensor =
     {
         .type = AQW_PM25_SENSOR,
         .chan = SENSOR_CHAN_PM_2_5,
-        .dev_name = CONFIG_HPMA115S0_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(honeywell_hpma115s0),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -87,14 +72,6 @@ void main(void)
     int err = 0;
 
     LOG_INF("Air Quality Wing Demo");
-
-#if defined(CONFIG_USB_UART_CONSOLE)
-    err = usb_enable(NULL);
-    if (err)
-    {
-        LOG_WRN("Unable to init USB. Err: %i", err);
-    }
-#endif
 
     /* Init Air Quality Wing */
     err = aqw_init(sensors, ARRAY_SIZE(sensors), sensor_cb);

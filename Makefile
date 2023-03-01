@@ -7,4 +7,4 @@ debug:
 
 .PHONY: rtt
 rtt:
-	jlinkrttclient -RTTTelnetPort $(PROG_PORT)
+	JLinkRTTClient -RTTTelnetPort $(PROG_PORT)

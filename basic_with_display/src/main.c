@@ -3,26 +3,16 @@
  * @copyright Copyright Circuit Dojo LLC 2021
  */
 
-#include <zephyr.h>
-#include <device.h>
-#include <drivers/sensor.h>
-#include <drivers/display.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/drivers/display.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(aqw_basic_with_display_demo);
+
 #include <lvgl.h>
-#include <devicetree.h>
 #include <aqw.h>
-
-#include <logging/log.h>
-LOG_MODULE_REGISTER(aqw_basic_demo);
-
-/* Device name defintions*/
-#define SHTC3 DT_INST(0, sensirion_shtc3cd)
-#define CONFIG_SHTC3_DEV_NAME DT_LABEL(SHTC3)
-
-#define SGP40 DT_INST(0, sensirion_sgp40cd)
-#define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
-
-#define HPMA115S0 DT_INST(0, honeywell_hpma115s0)
-#define CONFIG_HPMA115S0_DEV_NAME DT_LABEL(HPMA115S0)
 
 /* Inverval in seconds */
 #define STANDARD_SENSOR_INTERVAL 60
@@ -31,7 +21,7 @@ static struct aqw_sensor temperature_sensor =
     {
         .type = AQW_TEMPERATURE_SENSOR,
         .chan = SENSOR_CHAN_AMBIENT_TEMP,
-        .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_shtc3cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -39,7 +29,7 @@ static struct aqw_sensor humidity_sensor =
     {
         .type = AQW_HUMIDITY_SENSOR,
         .chan = SENSOR_CHAN_HUMIDITY,
-        .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_shtc3cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -47,7 +37,7 @@ static struct aqw_sensor voc_sensor =
     {
         .type = AQW_VOC_SENSOR,
         .chan = SENSOR_CHAN_VOC,
-        .dev_name = CONFIG_SGP40_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_sgp40cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -55,7 +45,7 @@ static struct aqw_sensor hpma_sensor =
     {
         .type = AQW_PM25_SENSOR,
         .chan = SENSOR_CHAN_PM_2_5,
-        .dev_name = CONFIG_HPMA115S0_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(honeywell_hpma115s0),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -66,7 +56,6 @@ static struct aqw_sensor *sensors[] = {
     &hpma_sensor,
 };
 
-static const struct device *display;
 static lv_obj_t *temp_label, *temp_value_label;
 static lv_obj_t *hum_label, *hum_value_label;
 static lv_obj_t *pm25_label, *pm25_value_label;
@@ -126,44 +115,44 @@ static int display_update(struct aqw_sensor_data *data)
 static int display_init(void)
 {
 
-    display = device_get_binding(DT_LABEL(DT_INST(0, solomon_ssd1306fb)));
-    if (display == NULL)
+    const struct device *display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+    if (!device_is_ready(display_dev))
     {
-        LOG_ERR("SSD16XX device not found");
-        return -ENODEV;
+        LOG_ERR("Display not ready!");
+        return -EIO;
     }
 
-    temp_label = lv_label_create(lv_scr_act(), NULL);
+    temp_label = lv_label_create(lv_scr_act());
     lv_label_set_text(temp_label, "T: (C)");
-    lv_obj_align(temp_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 0);
+    lv_obj_align(temp_label, LV_ALIGN_TOP_MID, 0, 0);
 
-    temp_value_label = lv_label_create(lv_scr_act(), NULL);
+    temp_value_label = lv_label_create(lv_scr_act());
     lv_label_set_text(temp_value_label, "*");
-    lv_obj_align(temp_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 10);
+    lv_obj_align(temp_value_label, LV_ALIGN_TOP_LEFT, 0, 14);
 
-    hum_label = lv_label_create(lv_scr_act(), NULL);
+    hum_label = lv_label_create(lv_scr_act());
     lv_label_set_text(hum_label, "H: (%)");
-    lv_obj_align(hum_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 36);
+    lv_obj_align(hum_label, LV_ALIGN_TOP_MID, 0, 32);
 
-    hum_value_label = lv_label_create(lv_scr_act(), NULL);
+    hum_value_label = lv_label_create(lv_scr_act());
     lv_label_set_text(hum_value_label, "*");
-    lv_obj_align(hum_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 46);
+    lv_obj_align(hum_value_label, LV_ALIGN_TOP_LEFT, 0, 46);
 
-    voc_label = lv_label_create(lv_scr_act(), NULL);
+    voc_label = lv_label_create(lv_scr_act());
     lv_label_set_text(voc_label, "VOC:");
-    lv_obj_align(voc_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 72);
+    lv_obj_align(voc_label, LV_ALIGN_TOP_MID, 0, 66);
 
-    voc_value_label = lv_label_create(lv_scr_act(), NULL);
+    voc_value_label = lv_label_create(lv_scr_act());
     lv_label_set_text(voc_value_label, "*");
-    lv_obj_align(voc_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 82);
+    lv_obj_align(voc_value_label, LV_ALIGN_TOP_LEFT, 0, 80);
 
-    pm25_label = lv_label_create(lv_scr_act(), NULL);
+    pm25_label = lv_label_create(lv_scr_act());
     lv_label_set_text(pm25_label, "PM25:");
-    lv_obj_align(pm25_label, NULL, LV_ALIGN_IN_TOP_MID, 0, 108);
+    lv_obj_align(pm25_label, LV_ALIGN_TOP_MID, 0, 94);
 
-    pm25_value_label = lv_label_create(lv_scr_act(), NULL);
+    pm25_value_label = lv_label_create(lv_scr_act());
     lv_label_set_text(pm25_value_label, "*");
-    lv_obj_align(pm25_value_label, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 118);
+    lv_obj_align(pm25_value_label, LV_ALIGN_TOP_LEFT, 0, 108);
 
     lv_task_handler();
 
@@ -196,7 +185,9 @@ void main(void)
     LOG_INF("Air Quality Wing Demo");
 
     /* Get display */
-    display_init();
+    err = display_init();
+    if (err)
+        __ASSERT_MSG_INFO("Unable to init display library. Err: %i", err);
 
     /* Init Air Quality Wing */
     err = aqw_init(sensors, ARRAY_SIZE(sensors), sensor_cb);

@@ -12,12 +12,12 @@ manifest:
     - name: nrf
       repo-path: sdk-nrf
       remote: nrfconnect
-      revision: v1.7.1
+      revision: v2.2.0
       import: true
     # Drivers repository
     - name: air-quality-wing-drivers
       path: aqw
-      revision: main
+      revision: 22522c9c0f26d2189e7e2659941f024b5a767b8b
       url: https://github.com/circuitdojo/air-quality-wing-zephyr-drivers.git
       import: true
     # Golioth repository.

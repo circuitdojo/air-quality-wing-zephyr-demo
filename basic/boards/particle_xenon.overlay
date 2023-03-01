@@ -2,6 +2,20 @@
  * Copyright (c) 2021 Circuit Dojo LLC
  */
 
+/ {
+	chosen {
+		zephyr,console = &cdc_acm_uart0;
+		zephyr,shell-uart = &cdc_acm_uart0;
+		zephyr,uart-mcumgr = &cdc_acm_uart0;
+	};
+};
+
+&zephyr_udc0 {
+	cdc_acm_uart0: cdc_acm_uart0 {
+		compatible = "zephyr,cdc-acm-uart";
+	};
+};
+
 &i2c0 {
     compatible = "nordic,nrf-twim";
     status = "okay";
@@ -10,14 +24,12 @@
     sgp40@59 {
         compatible = "sensirion,sgp40cd";
         reg = <0x59>;
-        label = "SGP40";
         enable-gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
     };
 
     shtc3@70 {
         compatible = "sensirion,shtc3cd";
         reg = <0x70>;
-        label = "SHTC3";
     };
 };
 
@@ -27,7 +39,6 @@
 
     hpma115s0 {
         compatible = "honeywell,hpma115s0";
-        label = "HPMA115S0";
         enable-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
     };
 };

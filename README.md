@@ -82,6 +82,22 @@ Then initialize this repo using the `Zephyr Tools: Init Repo` command:
 
 Make sure you use `https://github.com/circuitdojo/air-quality-wing-zephyr-demo.git` as the URL. It's best to select an **empty folder** to initialize the project to.
 
+### Switching between manifests 
+
+For the nRF91 related samples you'll need to run:
+
+```
+west config manifest.file west-ncs.yml
+west update
+```
+
+For all others, you'll need to run:
+
+```
+west config manifest.file west-vanilla.yml
+west update
+```
+
 ### Then build the sample!
 
 ![Build](img/extension/build.png)
