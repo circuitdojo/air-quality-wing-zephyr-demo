@@ -5,7 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: zephyrprojectrtos/ci:v0.18.4
+    container: zephyrprojectrtos/ci:v0.24.8
+    env:
+      CMAKE_PREFIX_PATH: /opt/toolchains
     strategy:
       matrix:
         sample: [basic, basic_with_display, ble, golioth, ethernet_hub_ble]
@@ -30,7 +32,7 @@ jobs:
             target: nrf52840dk_nrf52840
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           path: demo
@@ -59,7 +61,7 @@ jobs:
           cp build/zephyr/merged.hex .out/${{ matrix.sample }}_${{ matrix.target }}_merged.hex
 
       - name: Archive firmware
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: aqw_firmware_${{ steps.vars.outputs.branch }}_${{ steps.vars.outputs.sha_short }}
           path: demo/.out/
