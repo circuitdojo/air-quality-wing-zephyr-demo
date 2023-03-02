@@ -12,14 +12,6 @@ endif()
 # Print out build type
 message(STATUS "Build type: ${BUILD_TYPE} 🚀")
 
-# Adding custom overlay to add settings that aren't included in the SDK (yet) for the nRF9160 Feather
-if(${BOARD} STREQUAL circuitdojo_feather_nrf9160ns)
-message(STATUS "Adding .overlay for mcuboot.")
-list(APPEND mcuboot_DTC_OVERLAY_FILE
-  "${CMAKE_CURRENT_SOURCE_DIR}/mcuboot/circuitdojo_feather_nrf9160ns.overlay"
-  )
-endif()
-
 # Overlays
 list(INSERT OVERLAY_CONFIG 0 config/golioth.conf)
 
