@@ -57,8 +57,9 @@ jobs:
         run: |
           west build -b ${{ matrix.target }} -s ${{ matrix.sample }} -p
           mkdir -p .out
-          cp build/zephyr/app_update.bin .out/${{ matrix.sample }}_${{ matrix.target }}_app_update.bin
-          cp build/zephyr/merged.hex .out/${{ matrix.sample }}_${{ matrix.target }}_merged.hex
+          cp build/zephyr/app_update.bin .out/${{ matrix.sample }}_${{ matrix.target }}_app_update.bin || true
+          cp build/zephyr/merged.hex .out/${{ matrix.sample }}_${{ matrix.target }}_merged.hex || true
+          cp build/zephyr/zephyr.hex .out/${{ matrix.sample }}_${{ matrix.target }}_zephyr.hex || true
 
       - name: Archive firmware
         uses: actions/upload-artifact@v3
