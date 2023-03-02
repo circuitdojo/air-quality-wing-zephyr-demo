@@ -3,12 +3,12 @@
  * @copyright Copyright Circuit Dojo LLC 2022
  */
 
-#include <zephyr.h>
-#include <stdlib.h>
-
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/uuid.h>
+#include <zephyr/kernel.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/uuid.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(app_ble);
 
 #include <codec/aqw.h>
 
@@ -18,9 +18,6 @@
 #include <app_ble/gatt.h>
 #include <app_ble/services/aqw_c.h>
 #include <app_event_manager.h>
-
-#include <logging/log.h>
-LOG_MODULE_REGISTER(app_ble);
 
 static struct bt_conn *default_conn;
 static struct aqw_ble_client client = {0};
@@ -56,7 +53,7 @@ static void connected(struct bt_conn *conn, uint8_t err)
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_INF("Connected: %s", log_strdup(addr));
+    LOG_INF("Connected: %s", (char *)addr);
 
     /* Ref incoming */
     default_conn = bt_conn_ref(conn);
@@ -93,7 +90,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_INF("Disconnected: %s (reason 0x%02x)", log_strdup(addr), reason);
+    LOG_INF("Disconnected: %s (reason 0x%02x)", (char *)addr, reason);
 
     bt_conn_unref(default_conn);
     default_conn = NULL;

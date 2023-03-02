@@ -48,7 +48,7 @@ jobs:
         working-directory: demo
         run: |
           pip3 install -U west
-          west init -l .
+          west init --mf west-ncs.yml ,
           west update
           pip3 install -r ../zephyr/scripts/requirements-base.txt
 

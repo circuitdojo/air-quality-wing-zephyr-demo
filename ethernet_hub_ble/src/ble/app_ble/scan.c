@@ -3,11 +3,11 @@
  * @copyright Copyright Circuit Dojo LLC 2022
  */
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 
 #include <app_ble/scan.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(app_ble_scan);
 
 static int init_scan_filters(void)
@@ -54,7 +54,7 @@ static void scan_filter_match(struct bt_scan_device_info *device_info,
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(device_info->recv_info->addr, addr, sizeof(addr));
 
-    LOG_INF("Scan match: [addr: %s]", log_strdup(addr));
+    LOG_INF("Scan match: [addr: %s]", (char*)addr);
 }
 
 BT_SCAN_CB_INIT(scan_cb, scan_filter_match, NULL,

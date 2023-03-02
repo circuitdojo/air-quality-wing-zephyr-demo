@@ -6,10 +6,10 @@
 #ifndef GATT_H
 #define GATT_H
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/gatt.h>
 
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/gatt.h>
 #include <bluetooth/gatt_dm.h>
 
 typedef void (*gatt_discovery_complete_cb)(struct bt_gatt_dm *dm,

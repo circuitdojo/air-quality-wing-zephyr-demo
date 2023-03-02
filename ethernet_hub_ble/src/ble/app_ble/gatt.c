@@ -4,12 +4,12 @@
  * @copyright Copyright Circuit Dojo LLC 2022
  */
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 
 #include <app_ble/gatt.h>
 #include <app_ble/services/aqw.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(app_ble_gatt);
 
 static gatt_discovery_complete_cb cb = NULL;

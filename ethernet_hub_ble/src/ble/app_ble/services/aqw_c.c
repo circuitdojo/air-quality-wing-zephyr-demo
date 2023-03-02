@@ -3,16 +3,16 @@
  * @copyright Copyright Circuit Dojo LLC 2022
  */
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 
-#include <bluetooth/gatt.h>
+#include <zephyr/bluetooth/gatt.h>
 #include <bluetooth/gatt_dm.h>
 
 #include <aqw.h>
 #include <app_ble/services/aqw.h>
 #include <app_ble/services/aqw_c.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(app_ble_aqw_c);
 
 static uint8_t on_temperature_received(struct bt_conn *conn,

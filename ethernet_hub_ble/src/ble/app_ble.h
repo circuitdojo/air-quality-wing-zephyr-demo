@@ -6,7 +6,7 @@
 #ifndef _APP_BLE_H
 #define _APP_BLE_H
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 
 #include <aqw.h>
 

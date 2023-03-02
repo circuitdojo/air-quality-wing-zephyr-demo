@@ -5,10 +5,10 @@
 
 #include <stdio.h>
 
-#include <zephyr.h>
-#include <device.h>
-#include <drivers/sensor.h>
-#include <devicetree.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include #include <zephyr/drivers/sensor.h>
+#include <zephyr/devicetree.h>
 #include <aqw.h>
 
 #include <modem/lte_lc.h>
@@ -25,7 +25,7 @@
 
 #include <codec/aqw.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(aqw_golioth_demo);
 
 /* Used to prevent the app from running before connecting */

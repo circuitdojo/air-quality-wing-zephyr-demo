@@ -6,10 +6,9 @@
 #ifndef _AQW_CLIENT_H
 #define _AQW_CLIENT_H
 
-#include <zephyr.h>
-
-#include <drivers/sensor.h>
-#include <bluetooth/gatt.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/bluetooth/gatt.h>
 
 #include <aqw.h>
 #include <app_ble.h>

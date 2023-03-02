@@ -4,9 +4,11 @@
  */
 
 #include <stdlib.h>
-#include <zephyr.h>
-#include <device.h>
-#include <devicetree.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(aqw_ethernet_hub_ble);
 
 #include <date_time.h>
 #include <net/golioth/system_client.h>
@@ -17,9 +19,6 @@
 #include <app_event_manager.h>
 #include <app_network.h>
 
-#include <logging/log.h>
-LOG_MODULE_REGISTER(aqw_ethernet_hub_ble);
-
 #define SENSOR_DATA_ENTRY_COUNT 4
 
 static struct aqw_sensor_data sensor_data[SENSOR_DATA_ENTRY_COUNT] = {0};
@@ -27,27 +26,10 @@ static uint8_t sensor_data_count = 0;
 
 static struct golioth_client *client = GOLIOTH_SYSTEM_CLIENT_GET();
 
-static void golioth_on_message(struct golioth_client *client,
-                               struct coap_packet *rx)
-{
-    uint16_t payload_len;
-    const uint8_t *payload;
-    uint8_t type;
-
-    type = coap_header_get_type(rx);
-    payload = coap_packet_get_payload(rx, &payload_len);
-
-    if (!IS_ENABLED(CONFIG_LOG_BACKEND_GOLIOTH) && payload)
-    {
-        LOG_HEXDUMP_DBG(payload, payload_len, "Payload");
-    }
-}
-
 void date_time_evt(const struct date_time_evt *evt)
 {
 
     /*Setup and connect to Golioth once we have the time*/
-    client->on_message = golioth_on_message;
     golioth_system_client_start();
 }
 
@@ -88,7 +70,7 @@ void publish(struct aqw_sensor_data *data, size_t num_entries)
 
     /* Publish gps data */
     err = golioth_lightdb_set(client,
-                              GOLIOTH_LIGHTDB_STREAM_PATH("env"),
+                              "env",
                               COAP_CONTENT_FORMAT_APP_CBOR,
                               buf, size);
     if (err)
