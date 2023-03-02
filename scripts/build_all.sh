@@ -4,10 +4,11 @@
 declare -a basic_targets=("circuitdojo_feather_nrf9160_ns" "particle_xenon" "nrf52840dk_nrf52840")
 declare -a basic_with_display_targets=("circuitdojo_feather_nrf9160_ns" "particle_xenon")
 declare -a ble_targets=("particle_xenon" "nrf52840dk_nrf52840")
+declare -a ethernet_hub_ble_targets=("particle_xenon")
 declare -a golioth_targets=("circuitdojo_feather_nrf9160_ns")
 
 # Applications
-declare -a apps=("basic" "ble" "basic_with_display")
+declare -a apps=("basic" "ble" "basic_with_display" "ble" "ethernet_hub_ble" "golioth")
 
 # Get Git tags
 git fetch --prune --tags
@@ -30,6 +31,9 @@ targets=("${basic_with_display_targets[@]}")
 elif [ $app == "basic" ]
 then
 targets=("${basic_targets[@]}")
+elif [ $app == "ethernet_hub_ble" ]
+then 
+targets=("${ethernet_hub_ble_targets[@]}")
 elif [ $app == "ble" ]
 then 
 targets=("${ble_targets[@]}")
