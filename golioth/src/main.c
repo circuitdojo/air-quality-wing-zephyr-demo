@@ -7,41 +7,30 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
-#include #include <zephyr/drivers/sensor.h>
+#include <zephyr/drivers/sensor.h>
 #include <zephyr/devicetree.h>
+#include <zephyr/net/coap.h>
+#include <zephyr/sys/reboot.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(aqw_golioth_demo);
+
 #include <aqw.h>
 
 #include <modem/lte_lc.h>
 #include <modem/nrf_modem_lib.h>
-#include <modem/at_cmd.h>
-#include <modem/at_notif.h>
+#include <nrf_modem_at.h>
 #include <modem/modem_info.h>
 #include <nrf_modem.h>
 #include <date_time.h>
-#include <power/reboot.h>
 
-#include <net/coap.h>
 #include <net/golioth/system_client.h>
 
 #include <codec/aqw.h>
-
-#include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(aqw_golioth_demo);
 
 /* Used to prevent the app from running before connecting */
 K_SEM_DEFINE(lte_connected, 0, 1);
 
 static struct golioth_client *client = GOLIOTH_SYSTEM_CLIENT_GET();
-
-/* Device name defintions*/
-#define SHTC3 DT_INST(0, sensirion_shtc3cd)
-#define CONFIG_SHTC3_DEV_NAME DT_LABEL(SHTC3)
-
-#define SGP40 DT_INST(0, sensirion_sgp40cd)
-#define CONFIG_SGP40_DEV_NAME DT_LABEL(SGP40)
-
-#define HPMA115S0 DT_INST(0, honeywell_hpma115s0)
-#define CONFIG_HPMA115S0_DEV_NAME DT_LABEL(HPMA115S0)
 
 /* Inverval in seconds */
 #define STANDARD_SENSOR_INTERVAL 600
@@ -50,7 +39,7 @@ static struct aqw_sensor temperature_sensor =
     {
         .type = AQW_TEMPERATURE_SENSOR,
         .chan = SENSOR_CHAN_AMBIENT_TEMP,
-        .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_shtc3cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -58,7 +47,7 @@ static struct aqw_sensor humidity_sensor =
     {
         .type = AQW_HUMIDITY_SENSOR,
         .chan = SENSOR_CHAN_HUMIDITY,
-        .dev_name = CONFIG_SHTC3_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_shtc3cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -66,7 +55,7 @@ static struct aqw_sensor voc_sensor =
     {
         .type = AQW_VOC_SENSOR,
         .chan = SENSOR_CHAN_VOC,
-        .dev_name = CONFIG_SGP40_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(sensirion_sgp40cd),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -74,7 +63,7 @@ static struct aqw_sensor hpma_sensor =
     {
         .type = AQW_PM25_SENSOR,
         .chan = SENSOR_CHAN_PM_2_5,
-        .dev_name = CONFIG_HPMA115S0_DEV_NAME,
+        .dev = DEVICE_DT_GET_ONE(honeywell_hpma115s0),
         .interval = STANDARD_SENSOR_INTERVAL,
 };
 
@@ -125,28 +114,12 @@ void sensor_cb(struct aqw_sensor_data *data, size_t len)
 
     /* Publish gps data */
     err = golioth_lightdb_set(client,
-                              GOLIOTH_LIGHTDB_STREAM_PATH("env"),
+                              "env",
                               COAP_CONTENT_FORMAT_APP_CBOR,
                               buf, size);
     if (err)
     {
         LOG_WRN("Failed to send data: %d", err);
-    }
-}
-
-static void golioth_on_message(struct golioth_client *client,
-                               struct coap_packet *rx)
-{
-    uint16_t payload_len;
-    const uint8_t *payload;
-    uint8_t type;
-
-    type = coap_header_get_type(rx);
-    payload = coap_packet_get_payload(rx, &payload_len);
-
-    if (!IS_ENABLED(CONFIG_LOG_BACKEND_GOLIOTH) && payload)
-    {
-        LOG_HEXDUMP_DBG(payload, payload_len, "Payload");
     }
 }
 
@@ -233,7 +206,6 @@ void date_time_evt(const struct date_time_evt *evt)
 {
 
     /*Setup and connect to Golioth once we have the time*/
-    client->on_message = golioth_on_message;
     golioth_system_client_start();
 }
 

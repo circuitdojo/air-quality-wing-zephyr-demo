@@ -6,14 +6,12 @@
     sgp40@59 {
         compatible = "sensirion,sgp40cd";
         reg = <0x59>;
-        label = "SGP40";
         enable-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
     };
 
     shtc3@70 {
         compatible = "sensirion,shtc3cd";
         reg = <0x70>;
-        label = "SHTC3";
     };
 };
 
@@ -24,7 +22,6 @@
 
     hpma115s0 {
         compatible = "honeywell,hpma115s0";
-        label = "HPMA115S0";
         enable-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
     };
 };
