@@ -3,23 +3,21 @@
  * @copyright Copyright Circuit Dojo LLC 2021
  */
 
-#include <zephyr.h>
-#include <bluetooth/bluetooth.h>
-#include <settings/settings.h>
+#include <zephyr/kernel.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/mgmt/mcumgr/smp_bt.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(app_ble);
 
-/* MCUMgr BT FOTA includes */
 #include <os_mgmt/os_mgmt.h>
 #include <img_mgmt/img_mgmt.h>
-#include <mgmt/mcumgr/smp_bt.h>
 
 /* Services */
 #include <services/aqw.h>
 
 /* Local */
 #include <app_ble.h>
-
-#include <logging/log.h>
-LOG_MODULE_REGISTER(app_ble);
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)

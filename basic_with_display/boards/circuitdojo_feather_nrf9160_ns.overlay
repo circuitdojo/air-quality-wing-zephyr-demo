@@ -2,6 +2,12 @@
  * Copyright (c) 2021 Circuit Dojo LLC
  */
 
+/ {
+	chosen {
+        zephyr,display = &display;
+	};
+};
+
 &i2c1 {
     compatible = "nordic,nrf-twim";
     zephyr,concat-buf-size = <1024>;
@@ -19,7 +25,7 @@
         label = "SHTC3";
     };
 
-    ssd1306@3c {
+    display: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
         label = "SSD1306";
@@ -39,8 +45,6 @@
 &uart2 {
     compatible = "nordic,nrf-uarte";
     current-speed = <9600>;
-    tx-pin = <24>;
-    rx-pin = <23>;
     status = "okay";
 
     hpma115s0 {

@@ -3,24 +3,22 @@
  * @copyright Copyright Circuit Dojo LLC 2021
  */
 
+#include <zephyr/kernel.h>
 #include <zephyr/types.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/uuid.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(app_ble_aqw_service);
+
 #include <stddef.h>
 #include <string.h>
 #include <errno.h>
-#include <zephyr.h>
-#include <init.h>
-
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/uuid.h>
-#include <bluetooth/gatt.h>
 
 #include <app_ble.h>
 #include <services/aqw.h>
-
-#include <logging/log.h>
-LOG_MODULE_REGISTER(app_ble_aqw_service);
 
 static void app_ble_aqw_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {

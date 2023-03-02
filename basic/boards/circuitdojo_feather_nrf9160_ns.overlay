@@ -20,8 +20,6 @@
 &uart2 {
     compatible = "nordic,nrf-uarte";
     current-speed = <9600>;
-    tx-pin = <24>;
-    rx-pin = <23>;
     status = "okay";
 
     hpma115s0 {

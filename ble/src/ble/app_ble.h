@@ -6,9 +6,9 @@
 #ifndef _APP_BLE_H
 #define _APP_BLE_H
 
-/* Air Quality Wing Dependencies */
+#include <zephyr/drivers/sensor.h>
+
 #include <aqw.h>
-#include <drivers/sensor.h>
 
 struct app_ble_payload
 {
