@@ -6,12 +6,9 @@
 #include <zephyr/kernel.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/settings/settings.h>
-#include <zephyr/mgmt/mcumgr/smp_bt.h>
+#include <zephyr/mgmt/mcumgr/transport/smp_bt.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(app_ble);
-
-#include <os_mgmt/os_mgmt.h>
-#include <img_mgmt/img_mgmt.h>
 
 /* Services */
 #include <services/aqw.h>
@@ -46,8 +43,6 @@ int app_ble_init(void)
     }
 
     /* Register DFU */
-    os_mgmt_register_group();
-    img_mgmt_register_group();
     smp_bt_register();
 
     /* Start advertising */

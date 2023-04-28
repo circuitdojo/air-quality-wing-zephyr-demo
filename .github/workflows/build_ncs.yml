@@ -11,14 +11,14 @@ jobs:
     strategy:
       matrix:
         sample: [basic, basic_with_display, ble, golioth, ethernet_hub_ble]
-        target: [circuitdojo_feather_nrf9160ns, nrf52840dk_nrf52840, particle_xenon]
+        target: [circuitdojo_feather_nrf9160_ns, nrf52840dk_nrf52840, particle_xenon]
         exclude:
           # Exclude nrf9160 for ble
           - sample: ble
-            target: circuitdojo_feather_nrf9160ns
+            target: circuitdojo_feather_nrf9160_ns
           # Exclude for ethernet
           - sample: ethernet_hub_ble
-            target: circuitdojo_feather_nrf9160ns
+            target: circuitdojo_feather_nrf9160_ns
           - sample: ethernet_hub_ble
             target: nrf52840dk_nrf52840
           # Exclude nrf52840dk_nrf52840 for golioth
