@@ -1,0 +1,62 @@
+name: Build - Vanilla
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: zephyrprojectrtos/ci:v0.24.8
+    env:
+      CMAKE_PREFIX_PATH: /opt/toolchains
+    strategy:
+      matrix:
+        sample: [basic, basic_with_display, ble, golioth, ethernet_hub_ble]
+        target: [nrf52840dk_nrf52840, particle_xenon]
+        exclude:
+          - sample: ethernet_hub_ble
+            target: nrf52840dk_nrf52840
+          # Exclude nrf52840dk_nrf52840 for golioth
+          - sample: golioth
+            target: nrf52840dk_nrf52840
+          # Exclude particle_xenon for golioth
+          - sample: golioth
+            target: particle_xenon
+          # Exclude nrf52840dk_nrf52840 for golioth
+          - sample: basic_with_display
+            target: nrf52840dk_nrf52840
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          path: demo
+
+      - name: Set variables
+        working-directory: demo
+        id: vars
+        run: |
+             echo "::set-output name=branch::${GITHUB_REF#refs/*/}"
+             echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Initialize
+        working-directory: demo
+        run: |
+          pip3 install -U west
+          west init -l --mf west-vanilla.yml .
+          west update
+          pip3 install -r ../zephyr/scripts/requirements-base.txt
+
+      - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
+        working-directory: demo
+        run: |
+          west build -b ${{ matrix.target }} -s ${{ matrix.sample }} -p
+          mkdir -p .out
+          cp build/zephyr/app_update.bin .out/${{ matrix.sample }}_${{ matrix.target }}_app_update.bin || true
+          cp build/zephyr/merged.hex .out/${{ matrix.sample }}_${{ matrix.target }}_merged.hex || true
+          cp build/zephyr/zephyr.hex .out/${{ matrix.sample }}_${{ matrix.target }}_zephyr.hex || true
+
+      - name: Archive firmware
+        uses: actions/upload-artifact@v3
+        with:
+          name: aqw_firmware_${{ steps.vars.outputs.branch }}_${{ steps.vars.outputs.sha_short }}
+          path: demo/.out/
