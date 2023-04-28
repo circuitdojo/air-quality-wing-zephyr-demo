@@ -10,7 +10,7 @@ jobs:
       CMAKE_PREFIX_PATH: /opt/toolchains
     strategy:
       matrix:
-        sample: [basic, basic_with_display, ble, golioth, ethernet_hub_ble]
+        sample: [basic, basic_with_display, ble, golioth]
         target: [nrf52840dk_nrf52840, particle_xenon]
         exclude:
           - sample: ethernet_hub_ble
